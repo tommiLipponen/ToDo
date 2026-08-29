@@ -67,7 +67,7 @@ function App() {
     <div id="container">
       <h1>Todos</h1>
 
-      <form onSubmit={addTask}>
+      <form className="task-form" onSubmit={addTask}>
         <input
           type="text"
           value={task}
