@@ -2,23 +2,29 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './App.css'
 import Row from './components/Row'
+import { useUser } from './context/useUser'
 
-const apiUrl = 'http://localhost:3001'
+const apiUrl = import.meta.env.VITE_API_URL
 
 function App() {
   const [task, setTask] = useState('')
   const [tasks, setTasks] = useState([])
+  const { user } = useUser()
 
   useEffect(() => {
+    if (!user?.token) return
+
     axios
-      .get(`${apiUrl}/tasks`)
+      .get(`${apiUrl}/tasks`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
       .then((response) => {
         setTasks(response.data)
       })
       .catch((error) => {
-        alert(error.response?.data?.message || error.message || error)
+        alert(error.response?.data?.error?.message || error.message || error)
       })
-  }, [])
+  }, [user])
 
   const addTask = (event) => {
     event.preventDefault()
@@ -28,26 +34,32 @@ function App() {
     const newTask = { description }
 
     axios
-      .post(`${apiUrl}/tasks`, { task: newTask })
+      .post(
+        `${apiUrl}/tasks`,
+        { task: newTask },
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      )
       .then((response) => {
         setTasks((currentTasks) => [...currentTasks, response.data])
         setTask('')
       })
       .catch((error) => {
-        alert(error.response?.data?.error || error.message || error)
+        alert(error.response?.data?.error?.message || error.message || error)
       })
   }
 
   const deleteTask = (deletedId) => {
     axios
-      .delete(`${apiUrl}/tasks/${deletedId}`)
+      .delete(`${apiUrl}/tasks/${deletedId}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
       .then(() => {
         setTasks((currentTasks) =>
           currentTasks.filter((item) => item.id !== deletedId)
         )
       })
       .catch((error) => {
-        alert(error.response?.data?.error || error.message || error)
+        alert(error.response?.data?.error?.message || error.message || error)
       })
   }
 
