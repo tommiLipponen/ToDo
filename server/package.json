@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec \"**/*.test.js\" --ignore \"**/node_modules/**\""
   },
   "keywords": [],
   "author": "",
@@ -18,5 +18,9 @@
     "express": "^5.2.1",
     "nodemon": "^3.1.14",
     "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "chai": "^6.2.2",
+    "mocha": "^11.8.0"
   }
 }
