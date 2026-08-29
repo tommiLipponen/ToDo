@@ -100,6 +100,18 @@ describe('Testing user management', () => {
     expect(data.email).to.equal(user.email);
   });
 
+  it('should reject duplicate email registration', async () => {
+    const response = await fetch('http://localhost:3001/users/signup', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user }),
+    });
+    const data = await response.json();
+
+    expect(response.status).to.equal(409);
+    expect(data.error.message).to.equal('User already exists');
+  });
+
   it('should reject wrong password', async () => {
     const response = await fetch('http://localhost:3001/users/signin', {
       method: 'post',

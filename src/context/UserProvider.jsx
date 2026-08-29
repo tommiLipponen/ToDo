@@ -9,21 +9,35 @@ export default function UserProvider({ children }) {
   )
 
   const signUp = async () => {
-    const headers = { headers: { 'Content-Type': 'application/json' } }
-    await axios.post(
-      `${import.meta.env.VITE_API_URL}/users/signup`,
-      JSON.stringify({ user }),
-      headers
-    )
+    const payload = {
+      user: {
+        email: user.email?.trim().toLowerCase(),
+        password: user.password,
+      },
+    }
+
+    await axios.post(`${import.meta.env.VITE_API_URL}/users/signup`, payload, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    sessionStorage.removeItem('user')
     setUser({ email: '', password: '' })
   }
 
   const signIn = async () => {
-    const headers = { headers: { 'Content-Type': 'application/json' } }
+    const payload = {
+      user: {
+        email: user.email?.trim().toLowerCase(),
+        password: user.password,
+      },
+    }
+
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/users/signin`,
-      JSON.stringify({ user }),
-      headers
+      payload,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
     )
 
     const loggedInUser = response.data
