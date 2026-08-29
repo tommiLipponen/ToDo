@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import todoRouter from './routes/todoRouter.js';
+import userRouter from './routes/userRouter.js';
 
 const port = process.env.PORT || 3001;
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/tasks', todoRouter);
+app.use('/users', userRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
@@ -19,7 +21,7 @@ app.use((err, req, res, next) => {
     console.error(err.message);
   }
 
-  res.status(statusCode).json({
+  return res.status(statusCode).json({
     error: {
       message: err.message,
       status: statusCode,
